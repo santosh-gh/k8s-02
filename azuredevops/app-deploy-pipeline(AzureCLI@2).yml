@@ -1,0 +1,37 @@
+trigger: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: PublishArtifact
+    displayName: "Publish Pipeline Artifact"
+    jobs:
+      - job: PublishManifest
+        displayName: "Publish Manifest"
+        steps:
+          - task: PublishPipelineArtifact@1
+            inputs:
+              artifactName: 'manifests'
+              path: 'manifests'
+
+  - stage: Deploy
+    jobs:
+    - job: AKSDeploy
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+      - task: AzureCLI@2
+        displayName: Get AKS Credentials
+        inputs:
+          azureSubscription: $(azureSubscription)
+          scriptType: bash
+          scriptLocation: inlineScript
+          inlineScript: |
+            echo "Getting AKS credentials..."
+            az aks get-credentials --name $(aksCluster) --resource-group $(aksResourceGroup) --overwrite-existing
+
+            echo "Deploying to AKS..."
+            kubectl apply -f ./manifests   
+
+            echo "Deployment completed."

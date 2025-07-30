@@ -13,7 +13,7 @@ stages:
           - task: PublishPipelineArtifact@1
             inputs:
               artifactName: 'manifests'
-              path: 'manifests'
+              path: 'manifests'  
 
   - stage: Deploy
     displayName: Deploy to AKS
