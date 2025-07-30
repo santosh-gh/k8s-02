@@ -1,4 +1,4 @@
-# Deploying microservice applications in AKS using ACR image repositories with Azure DevOps Infra and App Pipelines
+# Deploying microservice applications in AKS using ACR image repositories with Azure DevOps Infra (az CLI) and App Pipelines
 
 Prerequisites
 
@@ -26,6 +26,10 @@ Prerequisites
 
     Create Service Principal (app reg) or Managed Identity for Azure DevOps to authenticate with Azure
 
+# Configure Azure DevOps
+
+    Create Organization, Project and Permissions
+
 # Azure DevOps Service Connection
 
     Create azure DevOps Service Connection to Azure (ARM) for Infrastructure Pipelines
@@ -38,7 +42,7 @@ Prerequisites
 
     Kubernetes Service Connection to deploy using kubectl or Helm
 
-# Configure and run the Infra Pipeline
+# Configure and run the Infra Pipeline (az CLI)
 
     infra-pipeline.yml
 
