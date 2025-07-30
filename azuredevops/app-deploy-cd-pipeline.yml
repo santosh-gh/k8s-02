@@ -1,0 +1,45 @@
+trigger: none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: PublishArtifact
+    displayName: "Publish Pipeline Artifact"
+    jobs:
+      - job: PublishManifest
+        displayName: "Publish Manifest"
+        steps:
+          - task: PublishPipelineArtifact@1
+            inputs:
+              artifactName: 'manifests'
+              path: 'manifests'
+
+  - stage: Deploy
+    displayName: Deploy to AKS
+    jobs:
+    - job: Deploy
+      displayName: Deploy
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+      - task: AzureCLI@2
+        displayName: 'Azure CLI: Connect to AKS'
+        inputs:
+          azureSubscription: 'arm-svc-con'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            az account set --subscription 'b798c28b-e334-4ecf-b338-ec314ced3616'
+            az aks get-credentials --resource-group 'rg-onlinestore-dev-uksouth-001' --name 'aks-onlinestore-dev-uksouth-001' --overwrite-existing
+
+      - task: Kubernetes@1
+        displayName: 'kubectl apply'
+        inputs:
+          connectionType: 'Kubernetes Service Connection'
+          kubernetesServiceEndpoint: 'aks-svc-connection'
+          namespace: 'default'
+          command: apply
+          arguments: '-f ./manifests'
+          # or, if using a single manifest file
+          # arguments: '-f ./manifests/all-in-one.yaml'
