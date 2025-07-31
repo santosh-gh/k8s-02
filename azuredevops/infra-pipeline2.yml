@@ -7,9 +7,10 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  SCRIPT_PATH: 'infra/azcli/script.sh'
-  ARTIFACT_NAME: 'deployment-scripts'
-  AZURE_SUBSCRIPTION: 'arm-svc-con' # Replace with your Azure service connection name
+  scriptPath: 'infra/azcli/script.sh'
+  artifactName: 'deployment-scripts'
+  serviceConnection: 'arm-svc-con' 
+  environment: 'dev'
 
 stages:
 
@@ -22,8 +23,8 @@ stages:
     steps:
     - task: PublishPipelineArtifact@1
       inputs:
-        targetPath: '$(SCRIPT_PATH)'
-        artifact: '$(ARTIFACT_NAME)'
+        targetPath: '$(scriptPath)'
+        artifact: '$(artifactName)'
         publishLocation: 'pipeline'
 
 # Stage 2 - Download & Run the Script
@@ -31,16 +32,22 @@ stages:
   displayName: 'Deploy Azure Resources'
   dependsOn: PublishScript
   jobs:
-  - job: DeployResources
-    displayName: 'Deploy using AZ CLI'
-    steps:
-    - download: current
-      artifact: $(ARTIFACT_NAME)
+    - deployment: DeployInfraResources
+      displayName: "Deploy Resources for: $(environment)"
+      environment: $(environment)
+      strategy:
+        runOnce:
+          deploy:
+            - job: DeployResources
+              displayName: 'Deploy using AZ CLI'
+              steps:
+                - download: current
+                  artifact: $(artifactName)
 
-    - task: AzureCLI@2
-      displayName: 'Run Deployment Script'
-      inputs:
-        azureSubscription: '$(AZURE_SUBSCRIPTION)'
-        scriptType: bash
-        scriptLocation: scriptPath
-        scriptPath: '$(Pipeline.Workspace)/$(ARTIFACT_NAME)/script.sh'
+                - task: AzureCLI@2
+                  displayName: 'Run Deployment Script'
+                  inputs:
+                    azureSubscription: '$(serviceConnection)'
+                    scriptType: bash
+                    scriptLocation: scriptPath
+                    scriptPath: '$(Pipeline.Workspace)/$(artifactName)/script.sh'
