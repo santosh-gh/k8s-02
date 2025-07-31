@@ -7,6 +7,7 @@ variables:
   serviceConnection: 'arm-svc-con'
   aksCluster: 'aks-onlinestore-dev-uksouth-001'
   aksResourceGroup: 'rg-onlinestore-dev-uksouth-001'
+  acrServiceConnection: 'acr-svc-connection'
   acrName: 'acronlinestoredevuksouth001'
   namespace: 'default'
   imageTag: $(Build.BuildId)   
@@ -26,7 +27,7 @@ stages:
 
           - template: appTemplates/build.yml
             parameters:
-              acrServiceConnection: $(serviceConnection)
+              acrServiceConnection: $(acrServiceConnection)
               imageName: $(imageName)
               dockerFilePath: '$(Build.sourcesdirectory)/app/order-service/Dockerfile'
               tag: $(imageTag)
