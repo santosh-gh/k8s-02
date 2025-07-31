@@ -11,6 +11,10 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  serviceConnection: 'arm-svc-con'
+  environment: 'dev'
+
 stages:
   - stage: Publish
     displayName: "Publish Artifact"
@@ -33,8 +37,8 @@ stages:
     displayName: "Dev"
     jobs:
       - deployment: DeployInfraResources
-        displayName: "Deploy Resources for: ${{parameters.environment}} environment"
-        environment: "${{parameters.environment}}"
+        displayName: "Deploy Resources for: $(environment)"
+        environment: $(environment)
         strategy:
           runOnce:
             deploy:
@@ -42,7 +46,7 @@ stages:
                 - task: AzureCLI@2
                   displayName: "Deploy Infra" 
                   inputs:
-                    azureSubscription: "${{parameters.serviceconnection}}"
+                    azureSubscription: $(serviceConnection)
                     scriptType: 'pscore'
                     scriptLocation: 'inlineScript'
                     workingDirectory: $(Pipeline.Workspace)
