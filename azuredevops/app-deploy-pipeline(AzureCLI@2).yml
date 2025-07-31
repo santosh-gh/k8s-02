@@ -3,6 +3,14 @@ trigger: none
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  serviceConnection: 'arm-svc-con'
+  aksCluster: 'aks-onlinestore-dev-uksouth-001'
+  aksResourceGroup: 'rg-onlinestore-dev-uksouth-001'
+  acrName: 'acronlinestoredevuksouth001'
+  namespace: 'default'
+  imageTag: $(Build.BuildId)
+
 stages:
   - stage: PublishArtifact
     displayName: "Publish Pipeline Artifact"
@@ -24,14 +32,19 @@ stages:
       - task: AzureCLI@2
         displayName: Get AKS Credentials
         inputs:
-          azureSubscription: $(azureSubscription)
+          azureSubscription: $(serviceConnection)
           scriptType: bash
           scriptLocation: inlineScript
           inlineScript: |
             echo "Getting AKS credentials..."
             az aks get-credentials --name $(aksCluster) --resource-group $(aksResourceGroup) --overwrite-existing
 
+            echo "Updating deployment files with image tags..."
+            sed -i "s|acronlinestoredevuksouth001.azurecr.io/order|$(acrName).azurecr.io/order:$(imageTag)|g" ./manifests/order-deployment.yml
+            sed -i "s|acronlinestoredevuksouth001.azurecr.io/product|$(acrName).azurecr.io/product:$(imageTag)|g" ./manifests/product-deployment.yml
+            sed -i "s|acronlinestoredevuksouth001.azurecr.io/store-front|$(acrName).azurecr.io/store-front:$(imageTag)|g" ./manifests/store-front-deployment.yml
+
             echo "Deploying to AKS..."
-            kubectl apply -f ./manifests   
+            kubectl apply -f ./manifests -n $(namespace)  
 
             echo "Deployment completed."

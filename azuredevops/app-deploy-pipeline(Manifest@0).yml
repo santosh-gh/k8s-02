@@ -47,13 +47,23 @@ stages:
             sed -i "s|acronlinestoredevuksouth001.azurecr.io/product|$(acrName).azurecr.io/product:$(imageTag)|g" ./manifests/product-deployment.yml
             sed -i "s|acronlinestoredevuksouth001.azurecr.io/store-front|$(acrName).azurecr.io/store-front:$(imageTag)|g" ./manifests/store-front-deployment.yml
 
-      - task: Kubernetes@1
-        displayName: 'kubectl apply'
+      # - task: Kubernetes@1
+      #   displayName: 'kubectl apply'
+      #   inputs:
+      #     connectionType: 'Kubernetes Service Connection'
+      #     kubernetesServiceEndpoint: $(aksServiceConnection)
+      #     namespace: $(namespace)
+      #     command: apply
+      #     arguments: '-f ./manifests'
+      #     # or, if using a single manifest file
+      #     # arguments: '-f ./manifests/all-in-one.yaml'
+      
+      - task: Manifest@0
+        displayName: Deploy Service A to AKS
         inputs:
-          connectionType: 'Kubernetes Service Connection'
-          kubernetesServiceEndpoint: $(aksServiceConnection)
+          action: 'deploy'
+          kubernetesServiceConnection: $(aksServiceConnection)
           namespace: $(namespace)
-          command: apply
-          arguments: '-f ./manifests'
-          # or, if using a single manifest file
-          # arguments: '-f ./manifests/all-in-one.yaml'
+          manifests: |
+            ./manifests
+          rolloutStatusTimeout: '300'

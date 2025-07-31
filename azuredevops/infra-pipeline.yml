@@ -12,18 +12,45 @@ pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-  - stage: Build
-    displayName: "Infra Validatation"
+  - stage: Publish
+    displayName: "Publish Artifact"
     jobs:
-      - template: infraTemplates/infravalidation.yml
-        parameters:
-          environment: "dev"
-          serviceconnection: "arm-svc-con"
+      steps:
+        - task: CopyFiles@2
+          displayName: Infra Files to Build Artifacts
+          inputs:
+            SourceFolder: "$(System.DefaultWorkingDirectory)/infra"
+            Contents: |
+              /**
+            TargetFolder: "$(Build.ArtifactStagingDirectory)/infra"
+
+        - publish: $(Build.ArtifactStagingDirectory)
+          displayName: Publish Transformed artifacts
+          artifact: InfraPackage
+
 
   - stage: Dev
     displayName: "Dev"
     jobs:
-      - template: infraTemplates/deployresources.yml
-        parameters:
-          environment: "dev"
-          serviceconnection: "arm-svc-con"
+      - deployment: DeployInfraResources
+        displayName: "Deploy Resources for: ${{parameters.environment}} environment"
+        environment: "${{parameters.environment}}"
+        strategy:
+          runOnce:
+            deploy:
+              steps:                
+                - task: AzureCLI@2
+                  displayName: "Deploy Infra" 
+                  inputs:
+                    azureSubscription: "${{parameters.serviceconnection}}"
+                    scriptType: 'pscore'
+                    scriptLocation: 'inlineScript'
+                    workingDirectory: $(Pipeline.Workspace)
+                    inlineScript: |
+                      $filename = "$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh"
+                                  
+                      Write-Host "STARTING DEPLOYMENT......."
+
+                      ./$filename 
+                  
+                      Write-Output "Successfully validate"
