@@ -38,8 +38,6 @@ stages:
       strategy:
         runOnce:
           deploy:
-            # - job: DeployResources
-            #   displayName: 'Deploy using AZ CLI'
             steps:
               - download: current
                 artifact: $(artifactName)
@@ -51,3 +49,14 @@ stages:
                   scriptType: bash
                   scriptLocation: scriptPath
                   scriptPath: '$(Pipeline.Workspace)/$(artifactName)/script.sh'
+
+              - task: Bash@3
+                inputs:
+                  filePath: './script.sh'
+                  workingDirectory: $(Pipeline.Workspace)/$(artifactName)
+                  displayName: 'Run script.sh'
+
+              - script: |
+                  echo "Starting the deployment"
+                  .$(Pipeline.Workspace)/$(artifactName)/script.sh
+                displayName: 'Run deploy.sh directly'
