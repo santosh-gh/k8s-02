@@ -53,13 +53,3 @@ stages:
                   scriptType: bash
                   scriptLocation: scriptPath
                   scriptPath: '$(Pipeline.Workspace)/$(artifactName)/script.sh'
-
-              - task: Bash@3
-                inputs:
-                  filePath: '$(Pipeline.Workspace)/$(artifactName)/script.sh'                 
-                  displayName: 'Run script.sh'
-
-              - script: |
-                  echo "Starting the deployment"
-                  .$(Pipeline.Workspace)/$(artifactName)/script.sh
-                displayName: 'Run deploy.sh directly'
