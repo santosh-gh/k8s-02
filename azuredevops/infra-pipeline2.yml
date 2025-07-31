@@ -38,8 +38,8 @@ stages:
       strategy:
         runOnce:
           deploy:
-            - job: DeployResources
-              displayName: 'Deploy using AZ CLI'
+            # - job: DeployResources
+            #   displayName: 'Deploy using AZ CLI'
               steps:
                 - download: current
                   artifact: $(artifactName)
