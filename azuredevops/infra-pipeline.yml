@@ -46,22 +46,22 @@ stages:
                 - script: |
 
                     echo "Working Directory: $(System.DefaultWorkingDirectory)"
-                    ls -la "$(System.DefaultWorkingDirectory)"
+                    ls -R "$(System.DefaultWorkingDirectory)"
 
                     echo "Working Directory: $(Build.sourcesdirectory)"
-                    ls -la "$(Build.sourcesdirectory)"
+                    ls -R "$(Build.sourcesdirectory)"
 
                     echo "Working Directory: $(Build.ArtifactStagingDirectory)"
-                    ls -la "$(Build.ArtifactStagingDirectoryy)"
+                    ls -R "$(Build.ArtifactStagingDirectoryy)"
 
                     echo "Working Directory: $(Pipeline.Workspace)"
-                    ls -la "$(Pipeline.Workspace)"
+                    ls -R "$(Pipeline.Workspace)"
 
 
 
 
                     echo "Starting the deployment"
-                    .$(Build.ArtifactStagingDirectory)/infra/azcli/script.sh
+                    .$($(Pipeline.Workspace))/InfraPackage/infra/azcli/script.sh
                   displayName: 'Run deploy.sh directly'
 
                 # - task: AzureCLI@2
