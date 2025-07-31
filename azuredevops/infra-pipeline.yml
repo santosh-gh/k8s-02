@@ -55,6 +55,6 @@ stages:
                                   
                       Write-Host "STARTING DEPLOYMENT......."
 
-                      ./$filename 
+                      ./$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh
                   
                       Write-Output "Successfully validate"
