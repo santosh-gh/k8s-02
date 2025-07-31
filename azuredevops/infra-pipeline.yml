@@ -42,19 +42,24 @@ stages:
         strategy:
           runOnce:
             deploy:
-              steps:                
-                - task: AzureCLI@2
-                  displayName: "Deploy Infra" 
-                  inputs:
-                    azureSubscription: $(serviceConnection)
-                    scriptType: 'pscore'
-                    scriptLocation: 'inlineScript'
-                    workingDirectory: $(Pipeline.Workspace)
-                    inlineScript: |
-                      $filename = "$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh"
-                                  
-                      Write-Host "STARTING DEPLOYMENT......."
+              steps:    
+                - script: |
+                    echo "Starting the deployment"
+                    ./$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh
+                  displayName: 'Run deploy.sh directly'
 
-                      ./$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh
+                # - task: AzureCLI@2
+                #   displayName: "Deploy Infra" 
+                #   inputs:
+                #     azureSubscription: $(serviceConnection)
+                #     scriptType: 'pscore'
+                #     scriptLocation: 'inlineScript'
+                #     workingDirectory: $(Pipeline.Workspace)
+                #     inlineScript: |
+                #       $filename = "$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh"
+                                  
+                #       Write-Host "STARTING DEPLOYMENT......."
+
+                #       ./$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh
                   
-                      Write-Output "Successfully validate"
+                #       Write-Output "Successfully validate"
