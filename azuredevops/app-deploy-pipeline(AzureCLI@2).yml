@@ -11,6 +11,7 @@ variables:
   acrName: 'acronlinestoredevuksouth001'
   namespace: 'default'
   environment: "dev"
+  artifactName: 'manifests'
   imageTag: $(Build.BuildId)   
   imageName: 'order'
 
@@ -41,8 +42,8 @@ stages:
         steps:
           - task: PublishPipelineArtifact@1
             inputs:
-              artifactName: 'manifests'
-              path: 'manifests'
+              artifactName: $(artifactName)
+              path: $(artifactName)
 
   - stage: Deploy
     jobs:
@@ -54,7 +55,7 @@ stages:
           deploy:
             steps:
               - download: current
-                artifact: $(manifests)
+                artifact: $(artifactName)
 
               - script: |
                   echo "Workspace Directory: $(Pipeline.Workspace)"
