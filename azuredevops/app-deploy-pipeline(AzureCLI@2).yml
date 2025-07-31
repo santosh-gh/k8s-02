@@ -10,6 +10,7 @@ variables:
   acrServiceConnection: 'acr-svc-connection'
   acrName: 'acronlinestoredevuksouth001'
   namespace: 'default'
+  environment: "dev"
   imageTag: $(Build.BuildId)   
   imageName: 'order'
 
