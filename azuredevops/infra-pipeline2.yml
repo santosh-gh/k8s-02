@@ -43,4 +43,4 @@ stages:
         azureSubscription: '$(AZURE_SUBSCRIPTION)'
         scriptType: bash
         scriptLocation: scriptPath
-        scriptPath: '$(Pipeline.Workspace)/$(ARTIFACT_NAME)/$(SCRIPT_PATH)'
+        scriptPath: '$(Pipeline.Workspace)/$(ARTIFACT_NAME)/script.sh'
