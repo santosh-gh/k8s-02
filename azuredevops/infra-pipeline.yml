@@ -61,7 +61,7 @@ stages:
 
 
                     echo "Starting the deployment"
-                    .$($(Pipeline.Workspace))/InfraPackage/infra/azcli/script.sh
+                    .$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh
                   displayName: 'Run deploy.sh directly'
 
                 # - task: AzureCLI@2
