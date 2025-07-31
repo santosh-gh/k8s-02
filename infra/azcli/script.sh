@@ -8,11 +8,11 @@ NODE_COUNT=1
 # Create a resource group
 az group create --name $RESOURCE_GROUP --location $LOCATION
 
-# # Create ACR (Azure Container Registry)
-# az acr create --resource-group $RESOURCE_GROUP \
-#               --name $ACR_NAME \
-#               --sku Basic \
-#               --admin-enabled true
+# Create ACR (Azure Container Registry)
+az acr create --resource-group $RESOURCE_GROUP \
+              --name $ACR_NAME \
+              --sku Basic \
+              --admin-enabled true
 
 
 # # Create AKS cluster and attach ACR in one step
