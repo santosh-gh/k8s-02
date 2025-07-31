@@ -75,11 +75,11 @@ stages:
                 #     scriptLocation: scriptPath
                 #     scriptPath: '.InfraPackage//infra/azcli/script.sh'
                     
-                # - task: Bash@3
-                #   inputs:
-                #     filePath: './InfraPackage/infra/azcli/script.sh'
-                #     workingDirectory: $(Pipeline.Workspace)
-                #     displayName: 'Run deploy.sh script'
+                - task: Bash@3
+                  inputs:
+                    filePath: './InfraPackage/infra/azcli/script.sh'
+                    workingDirectory: $(System.DefaultWorkingDirectory)
+                    displayName: 'Run deploy.sh script'
 
                 - script: |
 
