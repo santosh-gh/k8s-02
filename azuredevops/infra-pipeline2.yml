@@ -40,14 +40,14 @@ stages:
           deploy:
             # - job: DeployResources
             #   displayName: 'Deploy using AZ CLI'
-              steps:
-                - download: current
-                  artifact: $(artifactName)
+            steps:
+              - download: current
+                artifact: $(artifactName)
 
-                - task: AzureCLI@2
-                  displayName: 'Run Deployment Script'
-                  inputs:
-                    azureSubscription: '$(serviceConnection)'
-                    scriptType: bash
-                    scriptLocation: scriptPath
-                    scriptPath: '$(Pipeline.Workspace)/$(artifactName)/script.sh'
+              - task: AzureCLI@2
+                displayName: 'Run Deployment Script'
+                inputs:
+                  azureSubscription: '$(serviceConnection)'
+                  scriptType: bash
+                  scriptLocation: scriptPath
+                  scriptPath: '$(Pipeline.Workspace)/$(artifactName)/script.sh'
