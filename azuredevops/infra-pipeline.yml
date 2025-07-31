@@ -43,6 +43,14 @@ stages:
           runOnce:
             deploy:
               steps:
+
+                - task: AzureCLI@2
+                  inputs:
+                    azureSubscription: $(serviceConnection)
+                    scriptType: bash
+                    scriptLocation: scriptPath
+                    scriptPath: './infra/azcli/script.sh'
+                    
                 - task: Bash@3
                   inputs:
                     filePath: './home/vsts/work/1/InfraPackage/infra/azcli/script.sh'
