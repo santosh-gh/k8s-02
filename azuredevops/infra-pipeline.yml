@@ -47,16 +47,16 @@ stages:
                 - download: current
                   artifact: InfraPackage
 
-                - task: AzureCLI@2
-                  inputs:
-                    azureSubscription: $(serviceConnection)
-                    scriptType: bash
-                    scriptLocation: scriptPath
-                    scriptPath: '.InfraPackage//infra/azcli/script.sh'
+                # - task: AzureCLI@2
+                #   inputs:
+                #     azureSubscription: $(serviceConnection)
+                #     scriptType: bash
+                #     scriptLocation: scriptPath
+                #     scriptPath: '.InfraPackage//infra/azcli/script.sh'
                     
                 - task: Bash@3
                   inputs:
-                    filePath: './home/vsts/work/1/InfraPackage/infra/azcli/script.sh'
+                    filePath: './InfraPackage/infra/azcli/script.sh'
                     workingDirectory: $(Pipeline.Workspace)
                     displayName: 'Run deploy.sh script'
 
