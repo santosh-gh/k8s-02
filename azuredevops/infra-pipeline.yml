@@ -21,6 +21,27 @@ stages:
     jobs:
       - job:
         steps:
+
+          - script: |
+
+              echo "Agent.BuildDirectory: $(Agent.BuildDirectory)"
+              ls -R "$(Agent.BuildDirectory)"
+
+              echo "Build.StagingDirectory: $(Build.StagingDirectory)"
+              ls -R "$(Build.StagingDirectory)"          
+
+              echo "DefaultWorking Directory: $(System.DefaultWorkingDirectory)"
+              ls -R "$(System.DefaultWorkingDirectory)"
+
+              echo "Source Directory: $(Build.sourcesdirectory)"
+              ls -R "$(Build.sourcesdirectory)"
+
+              echo "ArtifactStaging Directory: $(Build.ArtifactStagingDirectory)"
+              ls -R "$(Build.ArtifactStagingDirectoryy)"
+
+              echo "Workspace Directory: $(Pipeline.Workspace)"
+              ls -R "$(Pipeline.Workspace)"
+
           - task: CopyFiles@2
             displayName: Infra Files to Build Artifacts
             inputs:
@@ -62,16 +83,22 @@ stages:
 
                 - script: |
 
-                    echo "Working Directory: $(System.DefaultWorkingDirectory)"
+                    echo "Agent.BuildDirectory: $(Agent.BuildDirectory)"
+                    ls -R "$(Agent.BuildDirectory)"
+
+                    echo "Build.StagingDirectory: $(Build.StagingDirectory)"
+                    ls -R "$(Build.StagingDirectory)"          
+
+                    echo "DefaultWorking Directory: $(System.DefaultWorkingDirectory)"
                     ls -R "$(System.DefaultWorkingDirectory)"
 
-                    echo "Working Directory: $(Build.sourcesdirectory)"
+                    echo "Source Directory: $(Build.sourcesdirectory)"
                     ls -R "$(Build.sourcesdirectory)"
 
-                    echo "Working Directory: $(Build.ArtifactStagingDirectory)"
+                    echo "ArtifactStaging Directory: $(Build.ArtifactStagingDirectory)"
                     ls -R "$(Build.ArtifactStagingDirectoryy)"
 
-                    echo "Working Directory: $(Pipeline.Workspace)"
+                    echo "Workspace Directory: $(Pipeline.Workspace)"
                     ls -R "$(Pipeline.Workspace)"
 
 
