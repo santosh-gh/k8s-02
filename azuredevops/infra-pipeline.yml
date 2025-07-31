@@ -49,7 +49,7 @@ stages:
                     azureSubscription: $(serviceConnection)
                     scriptType: bash
                     scriptLocation: scriptPath
-                    scriptPath: './infra/azcli/script.sh'
+                    scriptPath: '.InfraPackage//infra/azcli/script.sh'
                     
                 - task: Bash@3
                   inputs:
