@@ -15,17 +15,18 @@ stages:
   - stage: Publish
     displayName: "Publish Artifact"
     jobs:
-      - task: CopyFiles@2
-        displayName: Infra Files to Build Artifacts
-        inputs:
-          SourceFolder: "$(System.DefaultWorkingDirectory)/infra"
-          Contents: |
-            /**
-          TargetFolder: "$(Build.ArtifactStagingDirectory)/infra"
+      - steps:
+          - task: CopyFiles@2
+            displayName: Infra Files to Build Artifacts
+            inputs:
+              SourceFolder: "$(System.DefaultWorkingDirectory)/infra"
+              Contents: |
+                /**
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/infra"
 
-      - publish: $(Build.ArtifactStagingDirectory)
-        displayName: Publish Transformed artifacts
-        artifact: InfraPackage
+          - publish: $(Build.ArtifactStagingDirectory)
+            displayName: Publish Transformed artifacts
+            artifact: InfraPackage
 
 
   - stage: Dev
