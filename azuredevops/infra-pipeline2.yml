@@ -56,8 +56,7 @@ stages:
 
               - task: Bash@3
                 inputs:
-                  filePath: './$(artifactName)/script.sh'
-                  workingDirectory: $(Pipeline.Workspace)
+                  filePath: '$(Pipeline.Workspace)/$(artifactName)/script.sh'                 
                   displayName: 'Run script.sh'
 
               - script: |
