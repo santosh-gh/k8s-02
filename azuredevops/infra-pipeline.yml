@@ -42,7 +42,13 @@ stages:
         strategy:
           runOnce:
             deploy:
-              steps:    
+              steps:
+                - task: Bash@3
+                  inputs:
+                    filePath: './InfraPackage/infra/azcli/script.sh'
+                    workingDirectory: $(Pipeline.Workspace)
+                    displayName: 'Run deploy.sh script'
+
                 - script: |
 
                     echo "Working Directory: $(System.DefaultWorkingDirectory)"
