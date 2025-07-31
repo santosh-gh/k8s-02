@@ -1,6 +1,6 @@
 # Deploying microservice applications in AKS using 
 
-    Infra deploy: az cli in Azure Devops Infra Pipeline
+    Infra deploy: Azure Devops Infra Pipeline (AzureCLI@2, Kubernetes@1, KubernetesManifest@1)
     Docker build and push images to ACR: Azure Build Pipeline
     k8s manifests: DevOps Publish Artifact
     App deploy: kubectl Apply in Azure Devops App Pipeline

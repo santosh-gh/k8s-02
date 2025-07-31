@@ -58,7 +58,7 @@ stages:
       #     # or, if using a single manifest file
       #     # arguments: '-f ./manifests/all-in-one.yaml'
       
-      - task: Manifest@0
+      - task: KubernetesManifest@1
         displayName: Deploy Service A to AKS
         inputs:
           action: 'deploy'
