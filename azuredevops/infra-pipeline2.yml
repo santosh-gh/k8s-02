@@ -1,0 +1,46 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  SCRIPT_PATH: 'infra/azcli/script.sh'
+  ARTIFACT_NAME: 'deployment-scripts'
+  AZURE_SUBSCRIPTION: 'arm-svc-con' # Replace with your Azure service connection name
+
+stages:
+
+# Stage 1 - Publish the script
+- stage: PublishScript
+  displayName: 'Publish Deployment Script'
+  jobs:
+  - job: Publish
+    displayName: 'Publish Script as Artifact'
+    steps:
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(SCRIPT_PATH)'
+        artifact: '$(ARTIFACT_NAME)'
+        publishLocation: 'pipeline'
+
+# Stage 2 - Download & Run the Script
+- stage: Deploy
+  displayName: 'Deploy Azure Resources'
+  dependsOn: PublishScript
+  jobs:
+  - job: DeployResources
+    displayName: 'Deploy using AZ CLI'
+    steps:
+    - download: current
+      artifact: $(ARTIFACT_NAME)
+
+    - task: AzureCLI@2
+      displayName: 'Run Deployment Script'
+      inputs:
+        azureSubscription: '$(AZURE_SUBSCRIPTION)'
+        scriptType: bash
+        scriptLocation: scriptPath
+        scriptPath: '$(Pipeline.Workspace)/$(ARTIFACT_NAME)/$(SCRIPT_PATH)'
