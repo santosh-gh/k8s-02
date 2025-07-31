@@ -45,7 +45,7 @@ stages:
               steps:    
                 - script: |
                     echo "Starting the deployment"
-                    ./$(Build.ArtifactStagingDirectory)/infra/azcli/script.sh
+                    .$(Build.ArtifactStagingDirectory)/infra/azcli/script.sh
                   displayName: 'Run deploy.sh directly'
 
                 # - task: AzureCLI@2
