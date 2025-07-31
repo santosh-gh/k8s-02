@@ -42,6 +42,10 @@ stages:
               - download: current
                 artifact: $(artifactName)
 
+              - script: |
+                  echo "Workspace Directory: $(Pipeline.Workspace)"
+                  ls -R "$(Pipeline.Workspace)"
+
               - task: AzureCLI@2
                 displayName: 'Run Deployment Script'
                 inputs:
@@ -50,11 +54,11 @@ stages:
                   scriptLocation: scriptPath
                   scriptPath: '$(Pipeline.Workspace)/$(artifactName)/script.sh'
 
-              # - task: Bash@3
-              #   inputs:
-              #     filePath: './script.sh'
-              #     workingDirectory: $(Pipeline.Workspace)/$(artifactName)
-              #     displayName: 'Run script.sh'
+              - task: Bash@3
+                inputs:
+                  filePath: './$(artifactName)/script.sh'
+                  workingDirectory: $(Pipeline.Workspace)
+                  displayName: 'Run script.sh'
 
               - script: |
                   echo "Starting the deployment"
