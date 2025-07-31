@@ -44,6 +44,9 @@ stages:
             deploy:
               steps:
 
+                - download: current
+                  artifact: InfraPackage
+
                 - task: AzureCLI@2
                   inputs:
                     azureSubscription: $(serviceConnection)
