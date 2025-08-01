@@ -14,16 +14,17 @@ variables:
 
 stages:
 
-  # - stage: PublishArtifact
-  #   displayName: "Publish Pipeline Artifact"
-  #   jobs:
-  #     - job: PublishManifest
-  #       displayName: "Publish Manifest"
-  #       steps:
-  #         - task: PublishPipelineArtifact@1
-  #           inputs:
-  #             artifactName: $(artifactName)
-  #             path: $(artifactName)
+  - stage: Publish
+    displayName: Publish Artifact
+    jobs:
+      - job: PublishArtifact
+        displayName: Publish Artifact
+        steps:          
+          - task: PublishPipelineArtifact@1
+            displayName: Publish Manifest
+            inputs:
+              artifactName: $(artifactName)
+              path: $(artifactName)
 
   - stage: Deploy
     jobs:
