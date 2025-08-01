@@ -80,30 +80,26 @@ stages:
 
                     echo "Updating deployment files with image tags..."
                     sed -i "s|acronlinestoredevuksouth001.azurecr.io/order|$(acrName).azurecr.io/order:$(imageTag)|g" $(Pipeline.Workspace)/manifests/order-deployment.yml
-                  
-                    echo "Deploying to AKS..."
-                    kubectl apply -f $(Pipeline.Workspace)/manifests/order-deployment.yml -n $(namespace)  
-                    kubectl apply -f $(Pipeline.Workspace)/manifests/order-service.yml -n $(namespace) 
+             
 
-                    echo "Deployment completed."
 
-              # - task: Kubernetes@1
-              #   displayName: 'kubectl apply'
-              #   inputs:
-              #     connectionType: 'Kubernetes Service Connection'
-              #     kubernetesServiceEndpoint: $(aksServiceConnection)
-              #     namespace: $(namespace)
-              #     command: apply
-              #     arguments: '-f ./manifests'
-              #     # or, if using a single manifest file
-              #     # arguments: '-f ./manifests/all-in-one.yaml'
+              - task: Kubernetes@1
+                displayName: 'kubectl apply'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceEndpoint: $(aksServiceConnection)
+                  namespace: $(namespace)
+                  command: apply
+                  arguments: '-f $(Pipeline.Workspace)/manifests/order-deployment.yml'
+                  # or, if using a single manifest file
+                  # arguments: '-f ./manifests/all-in-one.yaml'
 
-              # - task: KubernetesManifest@1
-              #   displayName: Deploy Service A to AKS
-              #   inputs:
-              #     action: 'deploy'
-              #     kubernetesServiceConnection: $(aksServiceConnection)
-              #     namespace: $(namespace)
-              #     manifests: |
-              #       ./manifests
-              #     rolloutStatusTimeout: '300'
+              - task: KubernetesManifest@1
+                displayName: Deploy Service A to AKS
+                inputs:
+                  action: 'deploy'
+                  kubernetesServiceConnection: $(aksServiceConnection)
+                  namespace: $(namespace)
+                  manifests: |
+                    $(Pipeline.Workspace)/manifests/order-deployment.yml
+                  rolloutStatusTimeout: '300'
