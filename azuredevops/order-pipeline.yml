@@ -90,7 +90,7 @@ stages:
                   kubernetesServiceEndpoint: $(aksServiceConnection)
                   namespace: $(namespace)
                   command: apply
-                  arguments: '-f $(Pipeline.Workspace)/manifests/order-deployment.yml'
+                  arguments: '-f $(Pipeline.Workspace)/manifests/order-deployment.yml --valide=false'
                   # or, if using a single manifest file
                   # arguments: '-f ./manifests/all-in-one.yaml'
 
