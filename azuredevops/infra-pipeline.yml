@@ -16,7 +16,7 @@ stages:
 
 # Stage 1 - Publish the script
 - stage: PublishScript
-  displayName: 'Publish Deployment Script'
+  displayName: 'Publish Script'
   jobs:
   - job: Publish
     displayName: 'Publish Script as Artifact'
@@ -29,7 +29,7 @@ stages:
 
 # Stage 2 - Download & Run the Script
 - stage: Deploy
-  displayName: 'Deploy Azure Resources'
+  displayName: 'Deploy Resources'
   dependsOn: PublishScript
   jobs:
     - deployment: DeployInfraResources

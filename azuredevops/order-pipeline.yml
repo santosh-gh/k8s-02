@@ -8,6 +8,7 @@ variables:
   aksCluster: 'aks-onlinestore-dev-uksouth-001'
   aksResourceGroup: 'rg-onlinestore-dev-uksouth-001'
   acrServiceConnection: 'acr-svc-connection'
+  aksServiceConnection: 'aks-svc-connection'
   acrName: 'acronlinestoredevuksouth001'
   namespace: 'default'
   environment: "dev"
@@ -86,23 +87,23 @@ stages:
 
                     echo "Deployment completed."
 
-              - task: Kubernetes@1
-                displayName: 'kubectl apply'
-                inputs:
-                  connectionType: 'Kubernetes Service Connection'
-                  kubernetesServiceEndpoint: $(aksServiceConnection)
-                  namespace: $(namespace)
-                  command: apply
-                  arguments: '-f ./manifests'
-                  # or, if using a single manifest file
-                  # arguments: '-f ./manifests/all-in-one.yaml'
+              # - task: Kubernetes@1
+              #   displayName: 'kubectl apply'
+              #   inputs:
+              #     connectionType: 'Kubernetes Service Connection'
+              #     kubernetesServiceEndpoint: $(aksServiceConnection)
+              #     namespace: $(namespace)
+              #     command: apply
+              #     arguments: '-f ./manifests'
+              #     # or, if using a single manifest file
+              #     # arguments: '-f ./manifests/all-in-one.yaml'
 
-              - task: KubernetesManifest@1
-                displayName: Deploy Service A to AKS
-                inputs:
-                  action: 'deploy'
-                  kubernetesServiceConnection: $(aksServiceConnection)
-                  namespace: $(namespace)
-                  manifests: |
-                    ./manifests
-                  rolloutStatusTimeout: '300'
+              # - task: KubernetesManifest@1
+              #   displayName: Deploy Service A to AKS
+              #   inputs:
+              #     action: 'deploy'
+              #     kubernetesServiceConnection: $(aksServiceConnection)
+              #     namespace: $(namespace)
+              #     manifests: |
+              #       ./manifests
+              #     rolloutStatusTimeout: '300'
