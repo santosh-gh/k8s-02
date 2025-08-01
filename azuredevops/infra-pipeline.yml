@@ -1,125 +1,55 @@
-# name: 1.0.$(BuildID)
-
-trigger:
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - infra/*
+trigger: none
+  # branches:
+  #   include:
+  #     - main
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  serviceConnection: 'arm-svc-con'
+  scriptPath: 'infra/azcli/script.sh'
+  artifactName: 'deployment-scripts'
+  serviceConnection: 'arm-svc-con' 
   environment: 'dev'
 
 stages:
-  - stage: Publish
-    displayName: "Publish Artifact"
-    jobs:
-      - job:
-        steps:
 
-          - script: |
+# Stage 1 - Publish the script
+- stage: PublishScript
+  displayName: 'Publish Deployment Script'
+  jobs:
+  - job: Publish
+    displayName: 'Publish Script as Artifact'
+    steps:
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(scriptPath)'
+        artifact: '$(artifactName)'
+        publishLocation: 'pipeline'
 
-              echo "Agent.BuildDirectory: $(Agent.BuildDirectory)"
-              ls -R "$(Agent.BuildDirectory)"
+# Stage 2 - Download & Run the Script
+- stage: Deploy
+  displayName: 'Deploy Azure Resources'
+  dependsOn: PublishScript
+  jobs:
+    - deployment: DeployInfraResources
+      displayName: "Deploy Resources for: $(environment)"
+      environment: $(environment)
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - download: current
+                artifact: $(artifactName)
 
-              echo "Build.StagingDirectory: $(Build.StagingDirectory)"
-              ls -R "$(Build.StagingDirectory)"          
+              - script: |
+                  echo "Workspace Directory: $(Pipeline.Workspace)"
+                  ls -R "$(Pipeline.Workspace)"
 
-              echo "DefaultWorking Directory: $(System.DefaultWorkingDirectory)"
-              ls -R "$(System.DefaultWorkingDirectory)"
-
-              echo "Source Directory: $(Build.sourcesdirectory)"
-              ls -R "$(Build.sourcesdirectory)"
-
-              echo "ArtifactStaging Directory: $(Build.ArtifactStagingDirectory)"
-              ls -R "$(Build.ArtifactStagingDirectoryy)"
-
-              echo "Workspace Directory: $(Pipeline.Workspace)"
-              ls -R "$(Pipeline.Workspace)"
-
-          - task: CopyFiles@2
-            displayName: Infra Files to Build Artifacts
-            inputs:
-              SourceFolder: "$(System.DefaultWorkingDirectory)/infra"
-              Contents: |
-                /**
-              TargetFolder: "$(Build.ArtifactStagingDirectory)/infra"
-
-          - publish: $(Build.ArtifactStagingDirectory)
-            displayName: Publish Transformed artifacts
-            artifact: InfraPackage
-
-  - stage: Dev
-    displayName: "Dev"
-    jobs:
-      - deployment: DeployInfraResources
-        displayName: "Deploy Resources for: $(environment)"
-        environment: $(environment)
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-
-                - download: current
-                  artifact: InfraPackage
-
-                # - task: AzureCLI@2
-                #   inputs:
-                #     azureSubscription: $(serviceConnection)
-                #     scriptType: bash
-                #     scriptLocation: scriptPath
-                #     scriptPath: '.InfraPackage//infra/azcli/script.sh'
-                    
-                - task: Bash@3
-                  inputs:
-                    filePath: './InfraPackage/infra/azcli/script.sh'
-                    workingDirectory: $(System.DefaultWorkingDirectory)
-                    displayName: 'Run deploy.sh script'
-
-                - script: |
-
-                    echo "Agent.BuildDirectory: $(Agent.BuildDirectory)"
-                    ls -R "$(Agent.BuildDirectory)"
-
-                    echo "Build.StagingDirectory: $(Build.StagingDirectory)"
-                    ls -R "$(Build.StagingDirectory)"          
-
-                    echo "DefaultWorking Directory: $(System.DefaultWorkingDirectory)"
-                    ls -R "$(System.DefaultWorkingDirectory)"
-
-                    echo "Source Directory: $(Build.sourcesdirectory)"
-                    ls -R "$(Build.sourcesdirectory)"
-
-                    echo "ArtifactStaging Directory: $(Build.ArtifactStagingDirectory)"
-                    ls -R "$(Build.ArtifactStagingDirectoryy)"
-
-                    echo "Workspace Directory: $(Pipeline.Workspace)"
-                    ls -R "$(Pipeline.Workspace)"
-
-
-
-
-                    echo "Starting the deployment"
-                    .$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh
-                  displayName: 'Run deploy.sh directly'
-
-                # - task: AzureCLI@2
-                #   displayName: "Deploy Infra" 
-                #   inputs:
-                #     azureSubscription: $(serviceConnection)
-                #     scriptType: 'pscore'
-                #     scriptLocation: 'inlineScript'
-                #     workingDirectory: $(Pipeline.Workspace)
-                #     inlineScript: |
-                #       $filename = "$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh"
-                                  
-                #       Write-Host "STARTING DEPLOYMENT......."
-
-                #       ./$(Pipeline.Workspace)/InfraPackage/infra/azcli/script.sh
-                  
-                #       Write-Output "Successfully validate"
+              - task: AzureCLI@2
+                displayName: 'Run Deployment Script'
+                inputs:
+                  azureSubscription: '$(serviceConnection)'
+                  scriptType: bash
+                  scriptLocation: scriptPath
+                  scriptPath: '$(Pipeline.Workspace)/$(artifactName)/script.sh'

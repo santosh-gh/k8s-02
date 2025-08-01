@@ -17,7 +17,7 @@ variables:
 
 stages:
   - stage: Build
-    displayName: Build and publish stage
+    displayName: Build and Publish
     jobs:
       - job: BuildPublishDockerImages
         displayName: Build Publish Docker Images
@@ -34,21 +34,27 @@ stages:
               dockerFilePath: '$(Build.sourcesdirectory)/app/order-service/Dockerfile'
               tag: $(imageTag)
 
-  - stage: PublishArtifact
-    displayName: "Publish Pipeline Artifact"
-    jobs:
-      - job: PublishManifest
-        displayName: "Publish Manifest"
-        steps:
           - task: PublishPipelineArtifact@1
+            displayName: Publish Manifest
             inputs:
               artifactName: $(artifactName)
               path: $(artifactName)
 
+  # - stage: PublishArtifact
+  #   displayName: "Publish Pipeline Artifact"
+  #   jobs:
+  #     - job: PublishManifest
+  #       displayName: "Publish Manifest"
+  #       steps:
+  #         - task: PublishPipelineArtifact@1
+  #           inputs:
+  #             artifactName: $(artifactName)
+  #             path: $(artifactName)
+
   - stage: Deploy
     jobs:
     - deployment: DeployAKS
-      displayName: "Deploy AKS"
+      displayName: Deploy AKS
       environment: $(environment)
       strategy:
         runOnce:
@@ -79,3 +85,24 @@ stages:
                     kubectl apply -f $(Pipeline.Workspace)/manifests/order-service.yml -n $(namespace) 
 
                     echo "Deployment completed."
+
+              - task: Kubernetes@1
+                displayName: 'kubectl apply'
+                inputs:
+                  connectionType: 'Kubernetes Service Connection'
+                  kubernetesServiceEndpoint: $(aksServiceConnection)
+                  namespace: $(namespace)
+                  command: apply
+                  arguments: '-f ./manifests'
+                  # or, if using a single manifest file
+                  # arguments: '-f ./manifests/all-in-one.yaml'
+
+              - task: KubernetesManifest@1
+                displayName: Deploy Service A to AKS
+                inputs:
+                  action: 'deploy'
+                  kubernetesServiceConnection: $(aksServiceConnection)
+                  namespace: $(namespace)
+                  manifests: |
+                    ./manifests
+                  rolloutStatusTimeout: '300'
