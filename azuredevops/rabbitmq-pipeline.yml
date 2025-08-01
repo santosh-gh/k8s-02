@@ -53,7 +53,7 @@ stages:
                     az aks get-credentials --name $(aksCluster) --resource-group $(aksResourceGroup) --overwrite-existing
                           
                     echo "Deploying to AKS..."
-                    kubectl apply -f $(Pipeline.Workspace)/manifests/rabbitmq-deployment.yml -n $(namespace)  
+                    kubectl apply -f $(Pipeline.Workspace)/manifests/rabbitmq-statefulset.yml -n $(namespace)  
                     kubectl apply -f $(Pipeline.Workspace)/manifests/rabbitmq-service.yml -n $(namespace) 
 
                     echo "Deployment completed."
