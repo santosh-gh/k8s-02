@@ -18,6 +18,10 @@
     # Order service: Places orders.
     # RabbitMQ: Message queue for an order queue.
 
+# Directory Structure
+
+![Directory Structure](image.png) 
+
 # YouTube: 
 
     https://youtu.be/zoJ7MMPVqFY    
@@ -26,28 +30,14 @@
 
     https://github.com/santosh-gh/k8s-02
 
-# Deploying microservice applications in AKS
-
-    Infra deploy: Azure Devops Infra Pipeline 
-    Docker build and push images to ACR: Azure Build Pipeline 
-    k8s manifests: DevOps Publish Artifact
-    App deploy: kubectl Apply in Azure Devops App Pipeline
-
-
 # Steps
 
     1. Set up Azure DevOps
-    3. Infra deployment: Azure Pipeline (AzureCLI@2)
-
-    6. App deployment: Azure Release (AzureCLI@2)
-    7. Validate and Access the application
-    8. Clean the Azure resources
-
-# Login to Azure
-
-    az login
-    az account set --subscription=<subscriptionId>
-    az account show
+    2. Infra deployment: Azure Pipeline (AzureCLI@2)
+    3. Build and push images to ACR: Azure Build and Push Pipeline (docker@2)
+    4. App deployment: Azure Release (AzureCLI@2)
+    5. Validate and Access the application
+    6. Clean the Azure resources
 
 # Show existing resources
 
@@ -66,6 +56,10 @@
     infra-pipeline.yml
 
     Connect to cluster
+
+        az login
+        az account set --subscription=<subscriptionId>
+        az account show
 
         RESOURCE_GROUP="rg-onlinestore-dev-uksouth-001"
         AKS_NAME="aks-onlinestore-dev-uksouth-001"
