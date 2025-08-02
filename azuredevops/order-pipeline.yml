@@ -70,8 +70,8 @@ stages:
                     echo "Updating deployment files with image tags..."
                     sed -i "s|acronlinestoredevuksouth001.azurecr.io/order|$(acrName).azurecr.io/order:$(imageTag)|g" $(Pipeline.Workspace)/manifests/order-deployment.yml
                   
-                    # echo "Deploying to AKS..."
-                    # kubectl apply -f $(Pipeline.Workspace)/manifests/order-deployment.yml -n $(namespace)  
-                    # kubectl apply -f $(Pipeline.Workspace)/manifests/order-service.yml -n $(namespace) 
+                    echo "Deploying to AKS..."
+                    kubectl apply -f $(Pipeline.Workspace)/manifests/order-deployment.yml -n $(namespace)  
+                    kubectl apply -f $(Pipeline.Workspace)/manifests/order-service.yml -n $(namespace) 
 
-                    # echo "Deployment completed."
+                    echo "Deployment completed."

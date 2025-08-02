@@ -39,10 +39,6 @@
     5. Validate and Access the application
     6. Clean the Azure resources
 
-# Show existing resources
-
-    az resource list
-
 # Set up Azure DevOps
 
     Create Organization, Project and Permissions
