@@ -1,22 +1,45 @@
-# Deploying microservice applications in AKS using 
 
-    Infra deploy: Azure Devops Infra Pipeline (AzureCLI@2, Kubernetes@1, KubernetesManifest@1)
-    Docker build and push images to ACR: Azure Build Pipeline
+# Deploying microservice applications in AKS using Azure DevOps
+
+    A sample multi-container application with a group of microservices and web front ends 
+    that simulate a retail scenario.
+
+    Part1 (Manual Deployment using comand line tools AzCLI, Docker Desktop and kubectl): https://github.com/santosh-gh/k8s-01
+    YouTube: https://youtu.be/zoJ7MMPVqFY
+
+# Architesture
+
+![Store Architesture](aks-store-architecture.png)
+
+    # Store front: Web application for customers to view products and place orders.
+    # Product service: Shows product information.
+    # Order service: Places orders.
+    # RabbitMQ: Message queue for an order queue.
+
+# YouTube: 
+
+    https://youtu.be/zoJ7MMPVqFY    
+ 
+# GitHub Repository (source code)
+
+    https://github.com/santosh-gh/k8s-02
+
+# Deploying microservice applications in AKS
+
+    Infra deploy: Azure Devops Infra Pipeline 
+    Docker build and push images to ACR: Azure Build Pipeline 
     k8s manifests: DevOps Publish Artifact
     App deploy: kubectl Apply in Azure Devops App Pipeline
 
 
-Prerequisites
+# Steps
 
-    A valid Azure subscription
+    1. Set up Azure DevOps
+    3. Infra deployment: Azure Pipeline (AzureCLI@2)
 
-    Azure CLI : https://learn.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest
-
-    kubectl: https://kubernetes.io/docs/tasks/tools/
-
-    bash shell: Most Linux/macOS systems already have this. For Windows, use Git Bash or WSL: https://www.atlassian.com/git/tutorials/git-bash
-
-    Docker Desktop for building and pushing images locally: https://docs.docker.com/desktop/
+    6. App deployment: Azure Release (AzureCLI@2)
+    7. Validate and Access the application
+    8. Clean the Azure resources
 
 # Login to Azure
 
@@ -28,61 +51,63 @@ Prerequisites
 
     az resource list
 
-# Azure Identity 
-
-    Create Service Principal (app reg) or Managed Identity for Azure DevOps to authenticate with Azure
-
-# Configure Azure DevOps
+# Set up Azure DevOps
 
     Create Organization, Project and Permissions
 
-# Azure DevOps Service Connection
+    Create Service Principal (app reg) for Azure DevOps to authenticate with Azure
 
-    Create azure DevOps Service Connection to Azure (ARM) for Infrastructure Pipelines
+    Create DevOps Service Connection to Azure (ARM) for Infrastructure Pipelines
 
-# Docker Registry Service Connection
-
-    Create azure DevOps Docker Registry Service Connection to ACR
-
-# Kubernetes Service Connection
-
-    Kubernetes Service Connection to deploy using kubectl or Helm
-
-# Configure and run the Infra Pipeline (az CLI)
+# Setup and run Infra Pipeline
 
     infra-pipeline.yml
 
-# Connect to cluster
+    Connect to cluster
 
-    RESOURCE_GROUP="rg-onlinestore-dev-uksouth-001"
-    AKS_NAME="aks-onlinestore-dev-uksouth-001"
-    ACR_NAME="acronlinestoredevuksouth001"
+        RESOURCE_GROUP="rg-onlinestore-dev-uksouth-001"
+        AKS_NAME="aks-onlinestore-dev-uksouth-001"
 
-    az aks get-credentials --resource-group $(RESOURCE_GROUP) --name $(AKS_NAME)
+        az aks get-credentials --resource-group $(RESOURCE_GROUP) --name $(AKS_NAME)
 
-# Short name for kubectl
+    Short name for kubectl
 
-    alias k=kubectl
+        alias k=kubectl
 
-# Show all existing objects
+    Show all existing objects
 
-    k get all
+        k get all
 
-# Configure and run the Order Build Pipeline
+# Build and push images to ACR
 
-    order-pipeline.yaml
+    Create Azure ACR service connection
+    Build and push images to ACR: Azure Pipeline (Docker@2)
 
-# Configure and run the Product Build Pipeline
+    order-pipeline.yml
+    product-pipeline.yml
+    store-front-pipeline.yml
 
-    product-pipeline.yaml
+# Azure Release Pipeline
 
-# Configure and run the store front Build Pipeline
- 
-    store-front-pipeline.yaml
+    Configure and run the Order Build and deployment Pipeline
 
-# Configure and run the rabbitmq Build Pipeline
+        order-pipeline.yaml
 
-    order-pipeline.yaml
+    Configure and run the Product Build and deployment Pipeline
+
+        product-pipeline.yaml
+
+    Configure and run the store front Build and deployment Pipeline
+    
+        store-front-pipeline.yaml
+
+    Configure and run the rabbitmq deployment Pipeline
+
+        rabbitmq-pipeline.yaml
+
+    Configure and run the configmap deployment Pipeline
+
+        configmap-pipeline.yaml
 
 # Write Kubernetes YAML Manifests for the applicatons
 
@@ -96,16 +121,13 @@ Prerequisites
     rabbitmq-deployment.yml
     rabbitmq-service.yml
 
-# Configure and run the app deploy Pipeline
-
-    app-deploy-pipeline.yml
-
 # Verify the Deployment
 
     k get pods
     k get services
+    curl <LoadBalancer public IP>:80
     Browse the app using http://<LoadBalancer public IP>:80
 
 # Clean the Azure resources
 
-    az group delete --name rg-onlinestore-dev-uksouth-001 --yes --no-wait
+    az group delete --name rg-onlinestore-dev-uksouth-001 --yes --no-wait 
