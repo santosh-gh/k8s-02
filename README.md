@@ -4,7 +4,9 @@
     A sample multi-container application with a group of microservices and web front ends 
     that simulate a retail scenario.
 
-    Part1 (Manual Deployment using comand line tools AzCLI, Docker Desktop and kubectl): https://github.com/santosh-gh/k8s-01
+    Part1 (Manual Deployment using comand line tools):
+    AzCLI, Docker Desktop and kubectl: https://github.com/santosh-gh/k8s-01
+
     YouTube: https://youtu.be/zoJ7MMPVqFY
 
 # Architesture
